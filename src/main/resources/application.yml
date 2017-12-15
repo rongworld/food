@@ -1,0 +1,13 @@
+spring:
+  datasource:
+    url: jdbc:mysql://localhost:3306/foodtalk?useSSL=false
+    username: user
+    password: wr000000
+    driver-class-name: com.mysql.jdbc.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update
+SAVE_URL: D:/workplace/food/img/
+loginVerify: false
+key: food
+url: jdbc:mysql://120.24.66.220:3306/foodtalk?useSSL=false
