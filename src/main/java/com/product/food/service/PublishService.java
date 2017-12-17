@@ -15,7 +15,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class PublishService {
 
-    private Logger logger = LoggerFactory.getLogger(ImgService.class);
+    private Logger logger = LoggerFactory.getLogger(ImageSaveService.class);
     @Autowired
     private CommentRepository commentRepository;
 
@@ -23,7 +23,7 @@ public class PublishService {
     private FoodRepository foodRepository;
 
     @Autowired
-    private ImgService imgService;
+    private ImageSaveService imageSaveService;
 
     public Integer publishAndGetFid(NewCommentBean newComment){
         Comment comment = new Comment();
@@ -42,8 +42,8 @@ public class PublishService {
             comment.setPublishTime(newComment.getPublishTime());
             comment.setContent(newComment.getContent());
             commentRepository.save(comment);
-           imgService.setCommentAndNewComment(comment,newComment);
-            new Thread(imgService).start();
+           imageSaveService.setCommentAndNewComment(comment,newComment);
+            new Thread(imageSaveService).start();
             return food.getId();
         }else{
             return createFoodAndGetFid(newComment.getSite(),newComment.getShop(),newComment.getName());

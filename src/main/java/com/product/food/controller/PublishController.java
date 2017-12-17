@@ -1,22 +1,22 @@
 package com.product.food.controller;
 
 import com.product.food.annotation.LoginOnly;
-import com.product.food.dao.Comment;
 import com.product.food.model.JSON;
 import com.product.food.model.NewCommentBean;
 import com.product.food.security.Token;
+import com.product.food.service.ImageManagerService;
 import com.product.food.service.PublishService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
 
 @RestController
 public class PublishController {
@@ -25,6 +25,8 @@ public class PublishController {
     private String key;
     @Autowired
     private PublishService publishService;
+    @Autowired
+    private ImageManagerService imageManagerService;
     private Logger logger = LoggerFactory.getLogger(PublishController.class);
     @PostMapping(value = "/api/newComment")
     @LoginOnly
@@ -32,14 +34,10 @@ public class PublishController {
                           @RequestParam("name") String name,
                           @RequestParam("content")String content,
                           @RequestParam("site")String site,
-                          @RequestParam("shop")String shop,
-                          @RequestParam("img") MultipartFile multipartFile
+                          @RequestParam("shop")String shop
                           ,HttpServletRequest httpServletRequest
-                          ){
-        logger.info(score+"\n");
-        logger.info(name+"\n");
-        logger.info(site+"\n");
-        logger.info(shop+"\n");
+                          ) throws IOException, ServletException {
+        logger.info(score+"\n"+name+"\n"+content+"\n"+site+"\n"+shop);
         this.httpServletRequest = httpServletRequest;
         NewCommentBean newComment = new NewCommentBean();
         newComment.setContent(content);
@@ -49,7 +47,8 @@ public class PublishController {
         newComment.setName(name);
         newComment.setSite(site);
         newComment.setShop(shop);
-        newComment.setMultipartFile(multipartFile);
+        newComment.setFile(imageManagerService.getImg(httpServletRequest,"img"));
+        newComment.setImageContentType(imageManagerService.getContentType(httpServletRequest,"img"));
         Integer fid = publishService.publishAndGetFid(newComment);
         JSON json = new JSON("0","successful");
         json.setKeyAndValue("fid",fid);
@@ -61,5 +60,8 @@ public class PublishController {
         String username = Token.parseJWT(httpServletRequest.getHeader("Authorization"),key);
         return username;
     }
+
+
+
 
 }

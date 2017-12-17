@@ -11,16 +11,16 @@ public class Food {
     @GeneratedValue
     private Integer id;
 
-    @Column(name = "food_name")
+
     private String foodName;
 
-    @Column(name = "site")
+
     private String site;
 
-    @Column(name = "shop")
+
     private String shop;
 
-    @Column(name = "tag")
+
     private String tag;
 
     private String imgUrl;

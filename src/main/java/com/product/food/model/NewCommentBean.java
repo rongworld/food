@@ -1,6 +1,8 @@
 package com.product.food.model;
 
-import org.springframework.web.multipart.MultipartFile;
+
+
+import java.io.File;
 
 
 public class NewCommentBean {
@@ -9,10 +11,13 @@ public class NewCommentBean {
     private String content;
     private String site;
     private String shop;
-    private MultipartFile multipartFile;
+    private File file;
     private Long publishTime;
     private String username;
 
+
+
+    private String imageContentType;
     public String getName() {
         return name;
     }
@@ -53,13 +58,6 @@ public class NewCommentBean {
         this.shop = shop;
     }
 
-    public MultipartFile getMultipartFile() {
-        return multipartFile;
-    }
-
-    public void setMultipartFile(MultipartFile multipartFile) {
-        this.multipartFile = multipartFile;
-    }
 
     public Long getPublishTime() {
         return publishTime;
@@ -75,5 +73,20 @@ public class NewCommentBean {
 
     public void setUsername(String username) {
         this.username = username;
+    }
+
+    public File getFile() {
+        return file;
+    }
+
+    public void setFile(File file) {
+        this.file = file;
+    }
+    public String getImageContentType() {
+        return imageContentType;
+    }
+
+    public void setImageContentType(String imageContentType) {
+        this.imageContentType = imageContentType;
     }
 }

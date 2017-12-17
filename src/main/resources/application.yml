@@ -1,3 +1,4 @@
+
 spring:
   datasource:
     url: jdbc:mysql://localhost:3306/foodtalk?useSSL=false
@@ -7,7 +8,13 @@ spring:
   jpa:
     hibernate:
       ddl-auto: update
-SAVE_URL: D:/workplace/food/img/
+
 loginVerify: false
-key: food
-url: jdbc:mysql://120.24.66.220:3306/foodtalk?useSSL=false
+img_server: http://localhost:8081/api/upload
+key: test
+img_save_path: D:/workplace/food/temp
+
+
+
+
+

@@ -3,30 +3,26 @@ package com.product.food.service;
 import com.product.food.dao.Comment;
 import com.product.food.dao.CommentRepository;
 import com.product.food.model.NewCommentBean;
-import com.product.food.utils.UUIDUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
-import java.io.BufferedOutputStream;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 
 @Service
-public class ImgService implements Runnable{
+public class ImageSaveService implements Runnable{
     private Comment comment;
     private String UUID;
     private String imageSuffix;
-    private Logger logger = LoggerFactory.getLogger(ImgService.class);
+    private Logger logger = LoggerFactory.getLogger(ImageSaveService.class);
     private NewCommentBean newComment;
-    @Value("${SAVE_URL}")
-    private  String SAVE_URL;
     @Autowired
     private CommentRepository commentRepository;
+
+    @Autowired
+    private UpImgToServer imgToServer;
 
 
 
@@ -34,7 +30,8 @@ public class ImgService implements Runnable{
     @Override
     public void run() {
         try {
-            UUID = upToQiNiu(newComment.getMultipartFile());
+            UUID = upImg(newComment.getFile());
+            logger.info("接收到了UUID:"+UUID);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -50,17 +47,44 @@ public class ImgService implements Runnable{
         this.newComment = newComment;
     }
 
-    private String upToQiNiu(MultipartFile m) throws IOException {
+
+
+
+    private String upImg(File file) throws IOException {
+        String fileName = file.getName();
+        imageSuffix = fileName.substring(fileName.lastIndexOf(".")+1);
+      return imgToServer.up(file,imageSuffix,newComment.getImageContentType());
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*
+    private String upImg(MultipartFile m) throws IOException {
         String fileName = m.getOriginalFilename();
+        imgContentType = m.getContentType();
         logger.info(fileName);
         logger.info(m.getContentType());
         int dot = fileName.lastIndexOf(".");
         imageSuffix = fileName.substring(dot+1);
         UUID = UUIDUtil.getUUID();
-        File file = new File(SAVE_URL+UUID+"."+imageSuffix);
-        if(!file.getParentFile().exists()){
-            file.getParentFile().mkdirs();
-        }
+        File file = new File(UUID+"."+imageSuffix);
+
         if(file.exists() == false){
             file.createNewFile();
             logger.info("文件创建成功，目录："+file.getAbsolutePath());
@@ -74,6 +98,8 @@ public class ImgService implements Runnable{
         buffStream.write(bytes);
         logger.info("创建成功");
         buffStream.close();
+       String newUUID =  imgToServer.up(file,imageSuffix,imgContentType);
+        logger.info(newUUID);
         return UUID;
-    }
+    }*/
 }
