@@ -24,6 +24,8 @@ public class PublishController {
     private HttpServletRequest httpServletRequest;
     @Value("${key}")
     private String key;
+    @Value("${loginVerify}")
+    public boolean isVerify;
     @Autowired
     private PublishService publishService;
     @Autowired
@@ -31,16 +33,26 @@ public class PublishController {
     @Autowired
     private CheckToken checkToken;
     private Logger logger = LoggerFactory.getLogger(PublishController.class);
+
     @PostMapping(value = "/api/newComment")
     @LoginOnly
-    public String publish(@RequestParam("score")String score,
+    public String publish(@RequestParam("score") String score,
                           @RequestParam("name") String name,
-                          @RequestParam("content")String content,
-                          @RequestParam("site")String site,
-                          @RequestParam("shop")String shop
-                          ,HttpServletRequest httpServletRequest
-                          ) throws IOException, ServletException, MyException {
-        logger.info(score+"\n"+name+"\n"+content+"\n"+site+"\n"+shop);
+                          @RequestParam("content") String content,
+                          @RequestParam("site") String site,
+                          @RequestParam("shop") String shop
+            , HttpServletRequest httpServletRequest
+    ) throws IOException, ServletException, MyException {
+        if (score.equals("") |
+                name.equals("") |
+                content.equals("") |
+                site.equals("") |
+                shop.equals("")
+                ){
+            throw new MyException("EMPTY_PARAM");
+        }
+
+        logger.info(score + "\n" + name + "\n" + content + "\n" + site + "\n" + shop);
         this.httpServletRequest = httpServletRequest;
         NewCommentBean newComment = new NewCommentBean();
         newComment.setContent(content);
@@ -51,21 +63,22 @@ public class PublishController {
         newComment.setSite(site);
         newComment.setShop(shop);
         //存好图片并获得该图片
-        newComment.setFile(getImageService.getImg(httpServletRequest,"img"));
-        newComment.setImageContentType(getImageService.getContentType(httpServletRequest,"img"));
+        newComment.setFile(getImageService.getImg(httpServletRequest, "img"));
+        newComment.setImageContentType(getImageService.getContentType(httpServletRequest, "img"));
         Integer fid = publishService.publishAndGetFid(newComment);
-        JSON json = new JSON(0,"successful");
-        json.setKeyAndValue("fid",fid);
+        JSON json = new JSON(0, "successful");
+        json.setKeyAndValue("fid", fid);
         return json.getJSON();
     }
 
 
-    public String getUsername(){
+    public String getUsername() throws MyException {
+        if(!isVerify){
+            return "test";
+        }
         String token = httpServletRequest.getHeader("Authorization");
         return checkToken.getUsername(token);
     }
-
-
 
 
 }

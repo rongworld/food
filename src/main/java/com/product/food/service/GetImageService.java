@@ -1,7 +1,6 @@
 package com.product.food.service;
 
 import com.product.food.exception.MyException;
-import com.product.food.utils.ChangePermission;
 import com.product.food.utils.CheckUrlUtil;
 import org.apache.catalina.core.ApplicationPart;
 import org.slf4j.Logger;
@@ -25,10 +24,6 @@ public class GetImageService {
     public File getImg(HttpServletRequest httpServletRequest,String paramName) throws IOException, ServletException, MyException {
         uuid = UUID.randomUUID().toString().replace("-","");
         Part part = httpServletRequest.getPart(paramName);
-        if (part == null){
-            throw new MyException("NO_IMAGE");
-        }
-
 
         if (part.getContentType().contains("image")) {
             ApplicationPart ap = (ApplicationPart) part;
@@ -38,12 +33,10 @@ public class GetImageService {
             String suffix = fileName2.substring(fileName2.lastIndexOf(".")+1);
             save_path = CheckUrlUtil.check(save_path);
             String path = save_path + uuid+"."+suffix;
-            //ChangePermission.ChangeFile(path);
-
             part.write(path);
             logger.info("save img ok");
             File file = new File(path);
-            Runtime.getRuntime().exec("chmod 777 " + path);
+            file.setReadable(true,false);
             return file;
         }else{
             throw new MyException("NOT_IMAGE");
