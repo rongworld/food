@@ -3,6 +3,7 @@ package com.product.food.dao;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import java.util.Date;
 
 @Entity
 public class User {
@@ -18,7 +19,7 @@ public class User {
 
     private String password;
 
-    private String registerTime;
+    private Date registerTime;
 
     public Integer getId() {
         return id;
@@ -58,5 +59,13 @@ public class User {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public Date getRegisterTime() {
+        return registerTime;
+    }
+
+    public void setRegisterTime(Date registerTime) {
+        this.registerTime = registerTime;
     }
 }

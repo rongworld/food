@@ -1,18 +1,22 @@
-
 spring:
   datasource:
-    url: jdbc:mysql://localhost:3306/foodtalk?useSSL=false
+    url: jdbc:mysql://116.196.123.49:3306/foodtalk?useSSL=false
     username: user
     password: wr000000
     driver-class-name: com.mysql.jdbc.Driver
   jpa:
     hibernate:
       ddl-auto: update
+server:
+  port: 8080
 
 loginVerify: false
-img_server: http://localhost:8081/api/upload
-key: test
-img_save_path: D:/workplace/food/temp
+key: foodtalk
+comment_img_path: /res/commentImg/
+food_img_path: /res/foodImg/
+comment_img_url: http://116.196.123.49:7777/commentImg/
+food_img_url: http://116.196.123.49:7777/foodImg/
+checkURL: http://139.199.66.15:5000/api/track
 
 
 

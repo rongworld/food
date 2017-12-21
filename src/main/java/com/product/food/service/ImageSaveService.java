@@ -2,17 +2,23 @@ package com.product.food.service;
 
 import com.product.food.dao.Comment;
 import com.product.food.dao.CommentRepository;
+import com.product.food.dao.Food;
+import com.product.food.dao.FoodRepository;
 import com.product.food.model.NewCommentBean;
+import com.product.food.utils.CheckUrlUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
-import java.io.IOException;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.InputStream;
 
 @Service
-public class ImageSaveService implements Runnable{
+public class ImageSaveService  {
     private Comment comment;
     private String UUID;
     private String imageSuffix;
@@ -22,46 +28,88 @@ public class ImageSaveService implements Runnable{
     private CommentRepository commentRepository;
 
     @Autowired
-    private UpImgToServer imgToServer;
+    private FoodRepository foodRepository;
+    /*
+        @Autowired
+        private UpImgToServer imgToServer;
+    */
+
+    @Value("${food_img_path}")
+    private String foodImgPath;
 
 
+    @Value("${comment_img_url}")
+    private String CommentImgUrl;
 
+    @Value("${food_img_url}")
+    private String foodImgUrl;
 
+/*
     @Override
     public void run() {
-        try {
-            UUID = upImg(newComment.getFile());
-            logger.info("接收到了UUID:"+UUID);
-        } catch (IOException e) {
-            e.printStackTrace();
+        // UUID = upImg(newComment.getFile());
+        UUID = newComment.getFile().getName();
+        logger.info("UUID:" + UUID);
+
+        if (!CommentImgUrl.endsWith("/")) {
+            CommentImgUrl = CommentImgUrl + "/";
         }
-        if(UUID == null){
-            return;
-        }
-        comment.setImgUrls(UUID+"."+imageSuffix);
+        comment.setImgUrls(CommentImgUrl + UUID);
         commentRepository.saveAndFlush(comment);
     }
 
-    public void setCommentAndNewComment(Comment comment,NewCommentBean newComment){
+    public void setCommentAndNewComment(Comment comment, NewCommentBean newComment) {
         this.comment = comment;
         this.newComment = newComment;
     }
 
+*/
+    public boolean saveFoodImg(Food food, File f) {
+        foodImgPath = CheckUrlUtil.check(foodImgPath);
+        File file = new File(foodImgPath + f.getName());
+        try {
+            int byteRead;
+            if (f.exists()) {
+                InputStream inStream = new FileInputStream(f);
+                FileOutputStream fs = new FileOutputStream(file);
+                byte[] buffer = new byte[1024];
+                while ((byteRead = inStream.read(buffer)) != -1) {
+                    fs.write(buffer, 0, byteRead);
+                }
+                inStream.close();
+            }
+            //file.setReadable(true,false);
+            Runtime.getRuntime().exec("chmod 777 " + file.getAbsolutePath());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
-
-
-    private String upImg(File file) throws IOException {
-        String fileName = file.getName();
-        imageSuffix = fileName.substring(fileName.lastIndexOf(".")+1);
-      return imgToServer.up(file,imageSuffix,newComment.getImageContentType());
+        foodImgUrl = CheckUrlUtil.check(foodImgUrl);
+        food.setImgUrl(foodImgUrl +f.getName());
+        foodRepository.saveAndFlush(food);
+        return true;
     }
 
 
 
+    public boolean saveCommentImg(Comment comment, File imgFile) {
+        comment.setImgUrls(CommentImgUrl + imgFile.getName());
+        commentRepository.saveAndFlush(comment);
+        return true;
+    }
 
 
 
+/*
+    private String upImg(File file) throws IOException {
+        String fileName = file.getName();
+        imageSuffix = fileName.substring(fileName.lastIndexOf(".")+1);
+      return imgToServer.up(file,imageSuffix,newComment.getImageContentType());
 
+
+    }
+
+    */
 
 
 
@@ -102,4 +150,6 @@ public class ImageSaveService implements Runnable{
         logger.info(newUUID);
         return UUID;
     }*/
+
+
 }

@@ -14,7 +14,7 @@ public class JSON implements java.io.Serializable{
 
     private JSONObject jsonObject;
 
-    public JSON(String code, String message) {
+    public JSON(Integer code, String message) {
          jsonObject = new JSONObject();
         try {
             jsonObject.put("code", code);

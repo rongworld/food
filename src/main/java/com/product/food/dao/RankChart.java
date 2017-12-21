@@ -3,6 +3,7 @@ package com.product.food.dao;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import java.util.Date;
 
 @Entity
 public class RankChart {
@@ -10,27 +11,12 @@ public class RankChart {
     @GeneratedValue
     private Integer id;
 
-    private float score;
-
-    private String foodName;
-
-    private String site;
-
-    private String url;
-
-    private Integer rank;
-
-    private String shop;
-
     private Integer fid;
 
-    public Integer getId() {
-        return id;
-    }
+    private Date updateTime;
 
-    public void setId(Integer id) {
-        this.id = id;
-    }
+
+    private float score;
 
     public float getScore() {
         return score;
@@ -40,44 +26,12 @@ public class RankChart {
         this.score = score;
     }
 
-    public String getFoodName() {
-        return foodName;
+    public Integer getId() {
+        return id;
     }
 
-    public void setFoodName(String foodName) {
-        this.foodName = foodName;
-    }
-
-    public String getSite() {
-        return site;
-    }
-
-    public void setSite(String site) {
-        this.site = site;
-    }
-
-    public String getUrl() {
-        return url;
-    }
-
-    public void setUrl(String url) {
-        this.url = url;
-    }
-
-    public Integer getRank() {
-        return rank;
-    }
-
-    public void setRank(Integer rank) {
-        this.rank = rank;
-    }
-
-    public String getShop() {
-        return shop;
-    }
-
-    public void setShop(String shop) {
-        this.shop = shop;
+    public void setId(Integer id) {
+        this.id = id;
     }
 
     public Integer getFid() {
@@ -86,6 +40,14 @@ public class RankChart {
 
     public void setFid(Integer fid) {
         this.fid = fid;
+    }
+
+    public Date getUpdateTime() {
+        return updateTime;
+    }
+
+    public void setUpdateTime(Date updateTime) {
+        this.updateTime = updateTime;
     }
 }
 

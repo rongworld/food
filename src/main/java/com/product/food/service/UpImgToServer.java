@@ -7,7 +7,7 @@ import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
-@Service
+//@Service
 public class UpImgToServer {
     @Value("${img_server}")
     private String serverURL;

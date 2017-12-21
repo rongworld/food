@@ -1,10 +1,11 @@
 package com.product.food.controller;
 
 import com.product.food.annotation.LoginOnly;
+import com.product.food.exception.MyException;
 import com.product.food.model.JSON;
 import com.product.food.model.NewCommentBean;
-import com.product.food.security.Token;
-import com.product.food.service.ImageManagerService;
+import com.product.food.security.CheckToken;
+import com.product.food.service.GetImageService;
 import com.product.food.service.PublishService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,7 +27,9 @@ public class PublishController {
     @Autowired
     private PublishService publishService;
     @Autowired
-    private ImageManagerService imageManagerService;
+    private GetImageService getImageService;
+    @Autowired
+    private CheckToken checkToken;
     private Logger logger = LoggerFactory.getLogger(PublishController.class);
     @PostMapping(value = "/api/newComment")
     @LoginOnly
@@ -36,7 +39,7 @@ public class PublishController {
                           @RequestParam("site")String site,
                           @RequestParam("shop")String shop
                           ,HttpServletRequest httpServletRequest
-                          ) throws IOException, ServletException {
+                          ) throws IOException, ServletException, MyException {
         logger.info(score+"\n"+name+"\n"+content+"\n"+site+"\n"+shop);
         this.httpServletRequest = httpServletRequest;
         NewCommentBean newComment = new NewCommentBean();
@@ -47,18 +50,19 @@ public class PublishController {
         newComment.setName(name);
         newComment.setSite(site);
         newComment.setShop(shop);
-        newComment.setFile(imageManagerService.getImg(httpServletRequest,"img"));
-        newComment.setImageContentType(imageManagerService.getContentType(httpServletRequest,"img"));
+        //存好图片并获得该图片
+        newComment.setFile(getImageService.getImg(httpServletRequest,"img"));
+        newComment.setImageContentType(getImageService.getContentType(httpServletRequest,"img"));
         Integer fid = publishService.publishAndGetFid(newComment);
-        JSON json = new JSON("0","successful");
+        JSON json = new JSON(0,"successful");
         json.setKeyAndValue("fid",fid);
         return json.getJSON();
     }
 
 
     public String getUsername(){
-        String username = Token.parseJWT(httpServletRequest.getHeader("Authorization"),key);
-        return username;
+        String token = httpServletRequest.getHeader("Authorization");
+        return checkToken.getUsername(token);
     }
 
 

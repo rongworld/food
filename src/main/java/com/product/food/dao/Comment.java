@@ -4,6 +4,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import java.util.Date;
 import java.util.List;
 
 @Entity
@@ -12,7 +13,7 @@ public class Comment {
     @GeneratedValue
     private Integer id;
 
-    private String username;
+    private String userName;
 
     private String content;
 
@@ -20,11 +21,11 @@ public class Comment {
 
     private Float score;
 
-    private Integer likeCount;
+
 
     private Integer fid;
 
-    private Long publishTime;
+    private Date publishTime;
 
     public Integer getId() {
         return id;
@@ -35,11 +36,11 @@ public class Comment {
     }
 
     public String getUsername() {
-        return username;
+        return userName;
     }
 
     public void setUsername(String username) {
-        this.username = username;
+        this.userName = username;
     }
 
     public String getContent() {
@@ -66,14 +67,6 @@ public class Comment {
         this.score = score;
     }
 
-    public Integer getLikeCount() {
-        return likeCount;
-    }
-
-    public void setLikeCount(Integer likeCount) {
-        this.likeCount = likeCount;
-    }
-
     public Integer getFid() {
         return fid;
     }
@@ -82,11 +75,11 @@ public class Comment {
         this.fid = fid;
     }
 
-    public Long getPublishTime() {
+    public Date getPublishTime() {
         return publishTime;
     }
 
-    public void setPublishTime(Long publishTime) {
+    public void setPublishTime(Date publishTime) {
         this.publishTime = publishTime;
     }
 
